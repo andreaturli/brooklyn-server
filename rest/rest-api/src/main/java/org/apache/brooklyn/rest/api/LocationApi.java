@@ -18,7 +18,6 @@
  */
 package org.apache.brooklyn.rest.api;
 
-import io.swagger.annotations.Api;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +36,9 @@ import javax.ws.rs.core.Response;
 
 import org.apache.brooklyn.rest.domain.LocationSpec;
 import org.apache.brooklyn.rest.domain.LocationSummary;
+import org.apache.brooklyn.rest.domain.NodeMetadataSummary;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -49,7 +50,7 @@ import io.swagger.annotations.ApiParam;
 public interface LocationApi {
 
     /**
-     * @deprecated since 0.7.0; use {@link CatalogApi#listLocations(String, String)}
+     * @deprecated since 0.7.0; use {@link CatalogApi#listLocations(String, String, boolean)}
      */
     @GET
     @ApiOperation(value = "Fetch the list of location definitions",
@@ -98,4 +99,17 @@ public interface LocationApi {
     public void delete(
             @ApiParam(value = "Location id to delete", required = true)
             @PathParam("locationId") String locationId);
+
+    // Multi-cloud resource manager
+
+    @GET
+    @Path("/clouds/{providerName}/nodes")
+    @ApiOperation(value = "Fetch the list of nodes in a cloud location",
+            response = NodeMetadataSummary.class,
+            responseContainer = "List Node Metadata")
+    List<NodeMetadataSummary> listNodes(
+            @ApiParam(value = "Provider name to fetch", required = true)
+            @PathParam("providerName") String providerName
+    );
+
 }

@@ -33,6 +33,10 @@
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
+    <properties>
+        <auto-value.version>1.2</auto-value.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.brooklyn</groupId>
@@ -72,6 +76,11 @@
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.auto.value</groupId>
+            <artifactId>auto-value</artifactId>
+            <version>${auto-value.version}</version>
         </dependency>
 
         <dependency>

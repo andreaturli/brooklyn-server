@@ -18,6 +18,8 @@
  */
 package org.apache.brooklyn.rest.resources;
 
+import static org.apache.brooklyn.rest.util.WebResourceUtils.serviceAbsoluteUriBuilder;
+
 import java.net.URI;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -25,15 +27,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.ws.rs.core.Response;
 
 import org.apache.brooklyn.api.location.Location;
 import org.apache.brooklyn.api.location.LocationDefinition;
 import org.apache.brooklyn.api.typereg.RegisteredType;
 import org.apache.brooklyn.core.location.LocationConfigKeys;
+import org.apache.brooklyn.core.mgmt.internal.LocalManagementContext;
+import org.apache.brooklyn.location.jclouds.JcloudsLocation;
 import org.apache.brooklyn.rest.api.LocationApi;
+import org.apache.brooklyn.rest.domain.HardwareSummary;
 import org.apache.brooklyn.rest.domain.LocationSpec;
 import org.apache.brooklyn.rest.domain.LocationSummary;
+import org.apache.brooklyn.rest.domain.LoginCredentialsSummary;
+import org.apache.brooklyn.rest.domain.NodeMetadataSummary;
+import org.apache.brooklyn.rest.domain.OperatingSystemSummary;
 import org.apache.brooklyn.rest.filter.HaHotStateRequired;
 import org.apache.brooklyn.rest.transform.LocationTransformer;
 import org.apache.brooklyn.rest.transform.LocationTransformer.LocationDetailLevel;
@@ -43,15 +52,21 @@ import org.apache.brooklyn.util.collections.MutableMap;
 import org.apache.brooklyn.util.exceptions.Exceptions;
 import org.apache.brooklyn.util.text.NaturalOrderComparator;
 import org.apache.brooklyn.util.text.Strings;
+import org.jclouds.compute.domain.Hardware;
+import org.jclouds.compute.domain.NodeMetadata;
+import org.jclouds.compute.domain.OperatingSystem;
+import org.jclouds.domain.LoginCredentials;
+import org.jclouds.http.HttpResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.base.Predicates;
+import com.google.common.base.Throwables;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
-import static org.apache.brooklyn.rest.util.WebResourceUtils.serviceAbsoluteUriBuilder;
 
 @SuppressWarnings("deprecation")
 @HaHotStateRequired
@@ -178,11 +193,110 @@ public class LocationResource extends AbstractBrooklynRestResource implements Lo
         if (deleteAllVersions(locationId)>0) return;
         throw WebResourceUtils.notFound("No catalog item location matching %s; only catalog item locations can be deleted", locationId);
     }
-    
+
+    @Override
+    public List<NodeMetadataSummary> listNodes(String providerName) {
+        final LocalManagementContext mgmt = new LocalManagementContext();
+        try {
+
+            List<LocationDefinition> locationDefinitions = ImmutableList.of(mgmt.getLocationRegistry().getDefinedLocationByName(providerName));
+            //List<LocationDefinition> locationDefinitions = mgmt.getLocationRegistry().getDefinedLocations().values()
+            return FluentIterable.from(locationDefinitions)
+                    .transform(new Function<LocationDefinition, Location>() {
+                        @Override
+                        public Location apply(@Nullable LocationDefinition locationDef) {
+                            return mgmt.getLocationManager().createLocation(mgmt.getLocationRegistry().getLocationSpec(locationDef).get());
+                        }
+                    })
+                    .filter(Predicates.instanceOf(JcloudsLocation.class))
+                    .transformAndConcat(new Function<Location, Iterable<NodeMetadata>>() {
+                        @Override
+                        public Iterable<NodeMetadata> apply(Location location) {
+                            try {
+                                return (Iterable<NodeMetadata>) ((JcloudsLocation) location).getComputeService().listNodes();
+                            }catch (HttpResponseException e) {
+                                log.debug("Can't access the cloud provider", e);
+                                throw Throwables.propagate(e);
+                            }
+                        }
+                    })
+                    .transform(new Function<NodeMetadata, NodeMetadataSummary>() {
+                    @Override
+                    public NodeMetadataSummary apply(NodeMetadata input) {
+                        HardwareSummary hardwareSummary = new HardwareToSummary().apply(input.getHardware());
+                        NodeMetadataSummary.Builder builder = NodeMetadataSummary.builder()
+                                .id(input.getId())
+                                .name(input.getName())
+                                .providerId(input.getProviderId())
+                                .hostname(input.getHostname())
+                                .imageId(input.getImageId())
+                                .status(input.getStatus().name())
+                                .hardwareSummary(hardwareSummary)
+                                .loginPort(input.getLoginPort())
+                                .privateAddresses(input.getPrivateAddresses())
+                                .publicAddresses(input.getPublicAddresses())
+                                .tags(input.getTags());
+
+                        if (input.getCredentials() != null) {
+                            LoginCredentialsSummary loginCredentialsSummary = new LoginCredentialsToSummary().apply(input.getCredentials());
+                            builder.credentialsSummary(loginCredentialsSummary);
+                        }
+                        if (input.getOperatingSystem() != null) {
+                            OperatingSystemSummary operatingSystemSummary = new OperatingSystemToSummary().apply(input.getOperatingSystem());
+                            builder.operatingSystemSummary(operatingSystemSummary);
+                        }
+                        return builder.build();
+                    }
+                })
+                .toList();
+        } finally {
+            mgmt.terminate();
+        }
+    }
+
     private int deleteAllVersions(String locationId) {
         RegisteredType item = mgmt().getTypeRegistry().get(locationId);
-        if (item==null) return 0; 
+        if (item==null) return 0;
         brooklyn().getCatalog().deleteCatalogItem(item.getSymbolicName(), item.getVersion());
         return 1 + deleteAllVersions(locationId);
     }
+
+    private static class HardwareToSummary implements Function<Hardware, HardwareSummary> {
+        @Override
+        public HardwareSummary apply(@Nullable Hardware input) {
+            return HardwareSummary.builder()
+                    .id(input.getId())
+                    .name(input.getName())
+                    .processors(input.getProcessors().size())
+                    .ram(input.getRam())
+                    .hypervisor(input.getHypervisor())
+                    .isDeprecated(input.isDeprecated())
+                    .build();
+        }
+    }
+
+    private static class LoginCredentialsToSummary implements Function<LoginCredentials, LoginCredentialsSummary> {
+        @Override
+        public LoginCredentialsSummary apply(LoginCredentials input) {
+            return LoginCredentialsSummary.builder()
+                    .loginUser(input.getUser())
+                    .password(input.getPassword())
+                    .build();
+        }
+    }
+
+    private static class OperatingSystemToSummary implements Function<OperatingSystem, OperatingSystemSummary> {
+        @Override
+        public OperatingSystemSummary apply(OperatingSystem input) {
+            return OperatingSystemSummary.builder()
+                    .name(input.getName())
+                    .version(input.getVersion())
+                    .description(input.getDescription())
+                    .arch(input.getArch())
+                    .is64Bit(input.is64Bit())
+                    .family(input.getFamily().value())
+                    .build();
+        }
+    }
+
 }
