@@ -200,7 +200,6 @@ public class LocationResource extends AbstractBrooklynRestResource implements Lo
         try {
 
             List<LocationDefinition> locationDefinitions = ImmutableList.of(mgmt.getLocationRegistry().getDefinedLocationByName(providerName));
-            //List<LocationDefinition> locationDefinitions = mgmt.getLocationRegistry().getDefinedLocations().values()
             return FluentIterable.from(locationDefinitions)
                     .transform(new Function<LocationDefinition, Location>() {
                         @Override
@@ -215,7 +214,7 @@ public class LocationResource extends AbstractBrooklynRestResource implements Lo
                             try {
                                 return (Iterable<NodeMetadata>) ((JcloudsLocation) location).getComputeService().listNodes();
                             }catch (HttpResponseException e) {
-                                log.debug("Can't access the cloud provider", e);
+                                log.debug("Can't access the cloud provider specified.", e);
                                 throw Throwables.propagate(e);
                             }
                         }
