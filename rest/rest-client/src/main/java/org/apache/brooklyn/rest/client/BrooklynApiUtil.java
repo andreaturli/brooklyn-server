@@ -19,35 +19,20 @@
 
 package org.apache.brooklyn.rest.client;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.util.Date;
-import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicReference;
-import javax.ws.rs.core.Response;
-
 import org.apache.brooklyn.rest.api.EffectorApi;
-import org.apache.brooklyn.rest.domain.Status;
-import org.apache.brooklyn.rest.domain.TaskSummary;
-import org.apache.brooklyn.util.repeat.Repeater;
-import org.apache.brooklyn.util.time.Duration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.ImmutableMap;
 
 public class BrooklynApiUtil {
 
-    private static final Logger LOG = LoggerFactory.getLogger(BrooklynApiUtil.class);
+/*    private static final Logger LOG = LoggerFactory.getLogger(BrooklynApiUtil.class);
     private static final Duration DEFAULT_POLL_PERIOD = Duration.FIVE_SECONDS;
     private static final Duration DEFAULT_TIMEOUT = Duration.FIVE_MINUTES;
 
     private BrooklynApiUtil() {}
 
-    /**
+    *//**
      * Deploys the blueprint and returns the task summary.
      * @throws Exception If the response from the server when deploying was {@link #isUnhealthyResponse unhealthy}.
-     */
+     *//*
     public static TaskSummary deployBlueprint(BrooklynApi api, String blueprint) throws Exception {
         Response r = api.getApplicationApi().createFromYaml(blueprint);
         if (isUnhealthyResponse(r)) {
@@ -58,20 +43,20 @@ public class BrooklynApiUtil {
         return BrooklynApi.getEntity(r, TaskSummary.class);
     }
 
-    /**
+    *//**
      * Waits for the application with the given ID to be running.
      *
      * @throws IllegalStateException If the application was not running after {@link #DEFAULT_TIMEOUT}.
-     */
+     *//*
     public static void waitForRunningAndThrowOtherwise(BrooklynApi api, String applicationId, String taskId) throws IllegalStateException {
         waitForRunningAndThrowOtherwise(api, applicationId, taskId, DEFAULT_TIMEOUT);
     }
 
-    /**
+    *//**
      * Waits for the application with the given ID to be running.
      *
      * @throws IllegalStateException If the application was not running after the given timeout.
-     */
+     *//*
     public static void waitForRunningAndThrowOtherwise(BrooklynApi api, String applicationId, String taskId, Duration timeout) throws IllegalStateException {
         Status finalStatus = waitForAppStatus(api, applicationId, Status.RUNNING, timeout, DEFAULT_POLL_PERIOD);
         if (!Status.RUNNING.equals(finalStatus)) {
@@ -91,13 +76,13 @@ public class BrooklynApiUtil {
         }
     }
 
-    /**
+    *//**
      * Polls Brooklyn until the given application has the given status. Quits early if the
      * application's status is {@link org.apache.brooklyn.rest.domain.Status#ERROR} or
      * {@link org.apache.brooklyn.rest.domain.Status#UNKNOWN} and desiredStatus is something else.
      *
      * @return The final polled status.
-     */
+     *//*
     public static Status waitForAppStatus(final BrooklynApi api, final String application, final Status desiredStatus,
             Duration timeout, Duration pollPeriod) {
         final AtomicReference<Status> appStatus = new AtomicReference<>(Status.UNKNOWN);
@@ -127,28 +112,28 @@ public class BrooklynApiUtil {
         return appStatus.get();
     }
 
-    /**
+    *//**
      * Use the {@link EffectorApi effector API} to invoke the stop effector on the given application.
-     */
+     *//*
     public static void attemptStop(BrooklynApi api, String application, Duration timeout) {
         api.getEffectorApi().invoke(application, application, "stop", String.valueOf(timeout.toMilliseconds()),
                 ImmutableMap.<String, Object>of());
     }
 
-    /**
+    *//**
      * @return The result of the task with the given id, or "unknown" if it could not be found.
-     */
+     *//*
     public static String getTaskResult(BrooklynApi api, String taskId) {
         checkNotNull(taskId, "taskId");
         TaskSummary summary = api.getActivityApi().get(taskId);
         return summary == null || summary.getResult() == null ? "unknown" : summary.getResult().toString();
     }
 
-    /**
+    *//**
      * @return true if response's status code is not between 200 and 299 inclusive.
-     */
+     *//*
     public static boolean isUnhealthyResponse(Response response) {
         return response.getStatus() < 200 || response.getStatus() >= 300;
-    }
+    }*/
 
 }

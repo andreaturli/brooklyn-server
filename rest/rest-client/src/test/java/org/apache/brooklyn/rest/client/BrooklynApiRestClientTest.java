@@ -119,8 +119,6 @@ public class BrooklynApiRestClientTest {
         Asserts.assertStringContains(String.valueOf(response.getEntity()), "simple-tomcat:1.0");
     }
 
-
-
     public void testApplicationApiList() throws Exception {
         List<ApplicationSummary> apps = api.getApplicationApi().list(null);
         log.info("apps are: "+apps);
