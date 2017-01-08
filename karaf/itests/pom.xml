@@ -33,6 +33,7 @@
     <properties>
         <osgi.version>6.0.0</osgi.version>
         <pax.exam.version>4.9.1</pax.exam.version>
+        <pax-url.version>2.5.2</pax-url.version>
         <servlet.api.version>3.1.0</servlet.api.version>
         <validation.api.version>1.1.0.Final</validation.api.version>
     </properties>
@@ -61,7 +62,7 @@
 
         <dependency>
             <groupId>org.apache.karaf</groupId>
-            <artifactId>apache-karaf-minimal</artifactId>
+            <artifactId>apache-karaf</artifactId>
             <version>${karaf.version}</version>
             <scope>test</scope>
             <type>tar.gz</type>
@@ -73,6 +74,12 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-container-karaf</artifactId>
+            <version>${pax.exam.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam-container-karaf</artifactId>
