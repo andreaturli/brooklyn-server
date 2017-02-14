@@ -87,8 +87,43 @@ limitations under the License.
     <bean id="versionResourceBean" class="org.apache.brooklyn.rest.resources.VersionResource"/>
     <bean id="logoutResourceBean" class="org.apache.brooklyn.rest.resources.LogoutResource"/>
 
+    <!--authentication api-->
+    <cm:property-placeholder persistent-id="iorg.apache.brooklyn.rest.filter.authentication">
+        <cm:default-properties>
+            <cm:property name="authentication.path" value="/"/>
+            <cm:property name="jaas.realm" value="karaf"/>
+            <cm:property name="jwt.issuer" value="Apache Brooklyn"/>
+            <cm:property name="jwt.ttl" value="3600000"/>
+            <cm:property name="keystore.path" value="etc/keystore.jks"/>
+            <cm:property name="keystore.password" value="password"/>
+            <cm:property name="key.alias" value="serverkey"/>
+            <cm:property name="key.password" value="password"/>
+        </cm:default-properties>
+    </cm:property-placeholder>
+
+    <bean id="auth-api" class="org.apache.brooklyn.rest.api.AuthenticationApi" init-method="init">
+        <property name="jwtTimeToLive" value="${jwt.ttl}"/>
+        <property name="jwtIssuer" value="${jwt.issuer}"/>
+        <property name="jaasRealm" value="${jaas.realm}"/>
+        <property name="keystorePath" value="${keystore.path}"/>
+        <property name="keystorePassword" value="${keystore.password}"/>
+        <property name="keyAlias" value="${key.alias}"/>
+        <property name="keyPassword" value="${key.password}"/>
+    </bean>
+
+    <bean id="auth-filter" class="iorg.apache.brooklyn.rest.filter.AuthenticationFilter" init-method="init">
+        <property name="keystorePath" value="${keystore.path}"/>
+        <property name="keystorePassword" value="${keystore.password}"/>
+        <property name="keyAlias" value="${key.alias}"/>
+        <property name="keyPassword" value="${key.password}"/>
+        <property name="realm" value="${jaas.realm}"/>
+    </bean>
+    <!--end of authentication api-->
+    
     <jaxrs:server id="brooklynRestApiV1" address="/">
         <jaxrs:serviceBeans>
+            <ref component-id="auth-api"/>
+            
             <ref component-id="accessResourceBean"/>
             <ref component-id="activityResourceBean"/>
             <ref component-id="apidocResourceBean"/>
@@ -108,7 +143,17 @@ limitations under the License.
             <ref component-id="logoutResourceBean"/>
         </jaxrs:serviceBeans>
 
+        <jaxrs:inInterceptors>
+            <bean class="org.apache.cxf.interceptor.LoggingInInterceptor"/>
+        </jaxrs:inInterceptors>
+        <jaxrs:outInterceptors>
+            <bean class="org.apache.cxf.interceptor.LoggingOutInterceptor"/>
+        </jaxrs:outInterceptors>
+        
         <jaxrs:providers>
+            <ref component-id="auth-filter"/>
+            <!--<bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider"/>-->
+            
             <bean class="org.apache.brooklyn.rest.util.DefaultExceptionMapper"/>
             <bean class="org.apache.brooklyn.rest.util.json.BrooklynJacksonJsonProvider"/>
             <bean class="org.apache.brooklyn.rest.util.FormMapProvider"/>
