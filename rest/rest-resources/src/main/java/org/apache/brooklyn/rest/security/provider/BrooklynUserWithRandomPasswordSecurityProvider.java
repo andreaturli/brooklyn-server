@@ -32,11 +32,13 @@ public class BrooklynUserWithRandomPasswordSecurityProvider extends AbstractSecu
 
     public static final Logger LOG = LoggerFactory.getLogger(BrooklynUserWithRandomPasswordSecurityProvider.class);
     private static final String USER = "brooklyn";
-    private final String password;
+    private static final String password = Identifiers.makeRandomId(20);
+
+    static {
+        LOG.info("Allowing access to web console from localhost or with {}:{}", USER, password);
+    }
 
     public BrooklynUserWithRandomPasswordSecurityProvider() {
-        this.password = Identifiers.makeRandomId(10);
-        LOG.info("Allowing access to web console from localhost or with {}:{}", USER, password);
     }
 
     public BrooklynUserWithRandomPasswordSecurityProvider(ManagementContext mgmt) {
