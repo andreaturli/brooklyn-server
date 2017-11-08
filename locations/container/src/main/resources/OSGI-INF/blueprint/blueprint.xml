@@ -21,7 +21,7 @@ limitations under the License.
 
 
     <bean id="dockerLocationResolver" scope="prototype"
-          class="org.apache.brooklyn.container.location.docker.DockerLocationResolver"/>
+          class="org.apache.brooklyn.atos.location.rfi.DockerLocationResolver"/>
     <bean id="kubernetesLocationResolver" scope="prototype"
           class="org.apache.brooklyn.container.location.kubernetes.KubernetesLocationResolver"/>
     <bean id="openshiftLocationResolver" scope="prototype"

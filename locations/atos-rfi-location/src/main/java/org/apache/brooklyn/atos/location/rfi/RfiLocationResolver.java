@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.brooklyn.container.location.docker;
+package org.apache.brooklyn.atos.location.rfi;
 
 import java.util.Map;
 
@@ -25,28 +25,26 @@ import org.apache.brooklyn.api.location.LocationResolver;
 import org.apache.brooklyn.core.location.AbstractLocationResolver;
 import org.apache.brooklyn.core.location.LocationConfigUtils;
 import org.apache.brooklyn.core.location.LocationPropertiesFromBrooklynProperties;
-import org.apache.brooklyn.location.jclouds.JcloudsPropertiesFromBrooklynProperties;
 import org.apache.brooklyn.util.collections.MutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Locations starting with the given prefix (@code "docker") will use this resolver, to instantiate
- * a {@link DockerJcloudsLocation}.
+ * Locations starting with the given prefix (@code "rfi") will use this resolver, to instantiate
+ * a {@link RFILocation}.
  * <p>
  * We ensure that config will be picked up from brooklyn.properties using the appropriate precedence:
  * <ol>
  * <li>named location config
- * <li>Prefix {@code brooklyn.location.docker.}
- * <li>Prefix {@code brooklyn.jclouds.docker.}
- * <li>Prefix {@code brooklyn.jclouds.}
+ * <li>Prefix {@code brooklyn.location.rfi.}
+ * <li>Prefix {@code brooklyn.rfi.}
  * </ol>
  */
-public class DockerLocationResolver extends AbstractLocationResolver implements LocationResolver {
+public class RfiLocationResolver extends AbstractLocationResolver implements LocationResolver {
 
-    public static final Logger log = LoggerFactory.getLogger(DockerLocationResolver.class);
+    public static final Logger log = LoggerFactory.getLogger(RfiLocationResolver.class);
 
-    public static final String PREFIX = "docker";
+    public static final String PREFIX = "rfi";
 
     @Override
     public boolean isEnabled() {
@@ -60,12 +58,12 @@ public class DockerLocationResolver extends AbstractLocationResolver implements 
 
     @Override
     protected Class<? extends Location> getLocationType() {
-        return DockerJcloudsLocation.class;
+        return RFILocation.class;
     }
 
     @Override
     protected SpecParser getSpecParser() {
-        return new AbstractLocationResolver.SpecParser(getPrefix()).setExampleUsage("\"docker\"");
+        return new AbstractLocationResolver.SpecParser(getPrefix()).setExampleUsage("\"rfi\"");
     }
 
     @Override
@@ -77,13 +75,15 @@ public class DockerLocationResolver extends AbstractLocationResolver implements 
             throw new IllegalArgumentException(provider + " location configured with provider '" + providerInConf + "', but must be blank or '" + provider + "'");
         }
 
-        String providerOrApi = "docker";
-        String regionName = (String) prioritisedProperties.get("region");
-        Map<String, Object> jcloudsConf = new JcloudsPropertiesFromBrooklynProperties().getJcloudsProperties(providerOrApi, regionName, namedLocation, globalProperties);
-        return MutableMap.<String, Object>builder()
-                .putAll(jcloudsConf)
-                .putAll(dockerConf)
-                .put("provider", providerOrApi)
-                .build();
+//        String providerOrApi = "docker";
+//        String regionName = (String) prioritisedProperties.get("region");
+//        Map<String, Object> jcloudsConf = new JcloudsPropertiesFromBrooklynProperties().getJcloudsProperties(providerOrApi, regionName, namedLocation, globalProperties);
+//        return MutableMap.<String, Object>builder()
+//                .putAll(jcloudsConf)
+//                .putAll(dockerConf)
+//                .put("provider", providerOrApi)
+//                .build();
+        // TODO
+        return MutableMap.of();
     }
 }

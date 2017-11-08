@@ -16,6 +16,4 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-org.apache.brooklyn.atos.location.rfi.DockerLocationResolver
-org.apache.brooklyn.container.location.kubernetes.KubernetesLocationResolver
-org.apache.brooklyn.container.location.openshift.OpenShiftLocationResolver
+org.apache.brooklyn.atos.location.rfi.RfiLocationResolver

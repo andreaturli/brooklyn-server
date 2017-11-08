@@ -220,6 +220,7 @@
 
         <module>locations/jclouds</module>
         <module>locations/container</module>
+        <module>locations/atos-rfi-location</module>
 
         <module>software/base</module>
         <module>software/winrm</module>

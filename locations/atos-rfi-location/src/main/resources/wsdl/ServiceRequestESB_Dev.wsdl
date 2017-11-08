@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright 2015 The Apache Software Foundation.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<wsdl:definitions targetNamespace="http://esb.atos.net/PublicServices/ServiceRequest"
+             xmlns:tns="http://esb.atos.net/PublicServices/ServiceRequest"
+             xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema"
+             xmlns:xsServiceRequest="http://esb.atos.net/PublicSchemas/ServiceRequest"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+    <wsdl:types>
+        <xs:schema xmlns:xsServiceRequest="http://esb.atos.net/PublicSchemas/ServiceRequest"
+                   targetNamespace="http://esb.atos.net/PublicSchemas/ServiceRequest"
+                   elementFormDefault="qualified"
+                   attributeFormDefault="qualified">
+        <xs:complexType name="headerOPNType">
+            <xs:sequence>
+                <xs:element ref="xsServiceRequest:messageID"/>
+                <xs:element name="srcApplicationID" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>CRM name</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="dstApplicationID" type="xs:string" minOccurs="0"/>
+                <xs:element name="feedbackMode" type="xsServiceRequest:feedbackModeType" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Indicator wether a notification takes place in case of status changes.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+        <xs:complexType name="headerACKType">
+            <xs:sequence>
+                <xs:element ref="xsServiceRequest:messageID"/>
+                <xs:element name="srcApplicationID" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>CRM name</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="dstApplicationID" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+        <xs:complexType name="headerUPDType">
+            <xs:sequence>
+                <xs:element ref="xsServiceRequest:messageID"/>
+                <xs:element name="srcApplicationID" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>CRM name</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="dstApplicationID" type="xs:string" minOccurs="0"/>
+                <xs:element name="transferMaster" type="xs:boolean" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Write token</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+        <xs:complexType name="calldataOPNType">
+            <xs:sequence>
+                <xs:element name="ticketID" type="xs:string" minOccurs="0"/>
+                <xs:element name="extTicketID" type="xs:string" minOccurs="0"/>
+                <xs:element name="transactionID" type="xs:string" minOccurs="0"/>
+                <xs:element name="parentID" type="xs:string" minOccurs="0"/>
+                <xs:element name="shortDescription" type="xs:string" minOccurs="0"/>
+                <xs:element name="callType" type="xsServiceRequest:callTypeType" minOccurs="0"/>
+                <xs:element name="referenceCopy" type="xs:boolean" minOccurs="0"/>
+                <xs:element name="category" type="xs:string" minOccurs="0"/>
+                <xs:element name="type" type="xs:string" minOccurs="0"/>
+                <xs:element name="Item" type="xs:string" minOccurs="0"/>
+                <xs:element name="workgroup" type="xs:string" minOccurs="0"/>
+                <xs:element name="status" type="xsServiceRequest:statusType" minOccurs="0"/>
+                <xs:element name="stage" type="xs:string" minOccurs="0"/>
+                <xs:element name="reqType" type="xs:string" minOccurs="0"/>
+                <xs:element name="serviceOffering" type="xs:string" minOccurs="0"/>
+                <xs:element name="quantity" type="xs:int" minOccurs="0"/>
+                <xs:element name="backOrdered" type="xs:boolean" minOccurs="0"/>
+                <xs:element name="reassignmentCount" type="xs:int" minOccurs="0"/>
+                <xs:element name="billable" type="xs:boolean" minOccurs="0"/>
+                <xs:element name="duration" type="xs:string" minOccurs="0"/>
+                <xs:element name="businessDuration" type="xs:string" minOccurs="0"/>
+                <xs:element name="ritmInfo" type="xs:string" minOccurs="0"/>
+                <xs:element name="instruction" type="xs:string" minOccurs="0"/>
+                <xs:element name="closeNotes" type="xs:string" minOccurs="0"/>
+
+                <xs:element name="priority" type="xsServiceRequest:priorityType" minOccurs="0"/>
+                <xs:element name="site" type="xs:string" minOccurs="0"/>
+                <xs:element name="comment" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="organisation" type="xs:string" minOccurs="0"/>
+                <xs:element name="time" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="reported" type="xs:dateTime" minOccurs="0"/>
+                            <xs:element name="due" type="xs:dateTime" minOccurs="0">
+                                <xs:annotation>
+                                    <xs:documentation>Originally planned Due Date</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="closed" type="xs:dateTime" minOccurs="0"/>
+                            <xs:element name="timestamp" type="xs:dateTime" minOccurs="0"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="xsServiceRequest:additionalAttribute" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="xsServiceRequest:orderDetails" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+
+        <xs:complexType name="personType">
+            <xs:sequence>
+                <xs:element name="firstname" type="xs:string" minOccurs="0"/>
+                <xs:element name="lastname" type="xs:string" minOccurs="0"/>
+                <xs:element name="title" type="xs:string" minOccurs="0"/>
+                <xs:element name="phone" type="xs:string" minOccurs="0"/>
+                <xs:element name="cellphone" type="xs:string" minOccurs="0"/>
+                <xs:element name="fax" type="xs:string" minOccurs="0"/>
+                <xs:element name="email" type="xs:string" minOccurs="0"/>
+                <xs:element name="costcenter" type="xs:string" minOccurs="0"/>
+                <xs:element name="organisation" type="xs:string" minOccurs="0"/>
+                <xs:element name="GID" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+        <xs:element name="additionalAttribute">
+            <xs:complexType>
+                <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                        <xs:attribute name="name" type="xs:NMTOKEN" use="required"/>
+                    </xs:extension>
+                </xs:simpleContent>
+            </xs:complexType>
+        </xs:element>
+
+        <xs:element name="orderDetails">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="field" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:simpleContent>
+                                <xs:extension base="xs:string">
+                                    <xs:attribute name="name" type="xs:NMTOKEN" use="required"/>
+                                </xs:extension>
+                            </xs:simpleContent>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+
+        <xs:element name="attachment">
+            <xs:complexType>
+                <xs:simpleContent>
+                    <xs:extension base="xs:base64Binary">
+                        <xs:attribute name="name" type="xs:string"/>
+                        <xs:attribute name="type" type="xs:string"/>
+                    </xs:extension>
+                </xs:simpleContent>
+            </xs:complexType>
+        </xs:element>
+        <xs:element name="description">
+            <xs:complexType>
+                <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                    </xs:extension>
+                </xs:simpleContent>
+            </xs:complexType>
+        </xs:element>
+
+        <xs:element name="messageID" type="xs:unsignedLong"/>
+
+        <xs:simpleType name="statusType">
+            <xs:restriction base="xs:string">
+                <xs:enumeration value="Closed Complete"/>
+                <xs:enumeration value="Closed Incomplete"/>
+                <xs:enumeration value="Closed Skipped"/>
+                <xs:enumeration value="On Hold"/>
+                <xs:enumeration value="Open"/>
+                <xs:enumeration value="Pending"/>
+                <xs:enumeration value="Resolved"/>
+                <xs:enumeration value="Work in Progress"/>
+            </xs:restriction>
+        </xs:simpleType>
+        <xs:simpleType name="priorityType">
+            <xs:restriction base="xs:string">
+                <xs:enumeration value="Critical"/>
+                <xs:enumeration value="High"/>
+                <xs:enumeration value="Low"/>
+                <xs:enumeration value="Medium"/>
+                <xs:enumeration value="Minimal"/>
+            </xs:restriction>
+        </xs:simpleType>
+        <xs:simpleType name="callTypeType">
+            <xs:restriction base="xs:string">
+                <xs:enumeration value="ServiceRequest"/>
+                <xs:enumeration value="SCTask"/>
+            </xs:restriction>
+        </xs:simpleType>
+        <xs:simpleType name="feedbackModeType">
+            <xs:restriction base="xs:string">
+                <xs:enumeration value="always"/>
+                <xs:enumeration value="close"/>
+                <xs:enumeration value="update"/>
+                <xs:enumeration value="never"/>
+                <xs:enumeration value="resolve"/>
+                <xs:enumeration value="resolveClose"/>
+            </xs:restriction>
+        </xs:simpleType>
+        <xs:element name="open">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="header" type="xsServiceRequest:headerOPNType"/>
+                    <xs:element name="calldata" type="xsServiceRequest:calldataOPNType"/>
+                    <xs:element name="customer" type="xsServiceRequest:personType" minOccurs="0"/>
+                    <xs:element name="requester" type="xsServiceRequest:personType" minOccurs="0"/>
+                    <xs:element ref="xsServiceRequest:description"  minOccurs="0"/>
+                    <xs:element ref="xsServiceRequest:attachment" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+        <xs:element name="update">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="header" type="xsServiceRequest:headerUPDType"/>
+                    <xs:element name="calldata" type="xsServiceRequest:calldataOPNType"/>
+                    <xs:element name="customer" type="xsServiceRequest:personType" minOccurs="0"/>
+                    <xs:element name="requester" type="xsServiceRequest:personType" minOccurs="0"/>
+                    <xs:element ref="xsServiceRequest:description"  minOccurs="0"/>
+                    <xs:element ref="xsServiceRequest:attachment" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+        <xs:element name="pack">
+            <xs:annotation>
+                <xs:documentation>Process ACK</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="header" type="xsServiceRequest:headerACKType"/>
+                    <xs:element name="ticketID" type="xs:string"/>
+                    <xs:element name="extTicketID" type="xs:string" minOccurs="0"/>
+                    <xs:element name="masterID" type="xs:string" minOccurs="0"/>
+                    <xs:element name="returnCode" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation>!= 0 means negative ACKNOWLEDGEMENT</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="returnMessage" type="xs:string" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>Additional description</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="status" type="xsServiceRequest:statusType" minOccurs="0"/>
+                    <xs:element ref="xsServiceRequest:additionalAttribute" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+        <xs:element name="dack">
+            <xs:annotation>
+                <xs:documentation>Delivery ACK</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="header" type="xsServiceRequest:headerACKType"/>
+                    <xs:element name="ticketID" type="xs:string"/>
+                    <xs:element name="returnCode" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation>!= 0 means negative ACKNOWLEDGEMENT</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="returnMessage" type="xs:string" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>Additional description</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element ref="xsServiceRequest:additionalAttribute" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+        <xs:element name="attachments">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element ref="xsServiceRequest:attachment" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+    </xs:schema>
+    </wsdl:types>
+
+    <wsdl:message name="open">
+        <wsdl:part element="xsServiceRequest:open" name="part1"/>
+    </wsdl:message>
+    <wsdl:message name="update">
+        <wsdl:part element="xsServiceRequest:update" name="part1"/>
+    </wsdl:message>
+    <wsdl:message name="pack">
+        <wsdl:part element="xsServiceRequest:pack" name="part1"/>
+    </wsdl:message>
+    <wsdl:message name="dack">
+        <wsdl:part element="xsServiceRequest:dack" name="part1"/>
+    </wsdl:message>
+
+    <wsdl:portType name="PortType">
+        <wsdl:operation name="open">
+            <wsdl:input message="tns:open"/>
+            <wsdl:output message="tns:dack"/>
+        </wsdl:operation>
+        <wsdl:operation name="update">
+            <wsdl:input message="tns:update"/>
+            <wsdl:output message="tns:dack"/>
+        </wsdl:operation>
+        <wsdl:operation name="processACK">
+            <wsdl:input message="tns:pack"/>
+            <wsdl:output message="tns:dack"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="PortTypeEndpoint1Binding" type="tns:PortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="open">
+            <soap:operation soapAction="open" style="document"/>
+            <wsdl:input>
+                <soap:body parts="part1" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="part1" use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="update">
+            <soap:operation soapAction="update" style="document"/>
+            <wsdl:input>
+                <soap:body parts="part1" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="part1" use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="processACK">
+            <soap:operation soapAction="processACK" style="document"/>
+            <wsdl:input>
+                <soap:body parts="part1" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="part1" use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="Service">
+        <wsdl:port binding="tns:PortTypeEndpoint1Binding" name="PortTypeEndpoint1">
+            <soap:address location="https://atosglobaldev.service-now.com/ServiceRequestESB.do?SOAP"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

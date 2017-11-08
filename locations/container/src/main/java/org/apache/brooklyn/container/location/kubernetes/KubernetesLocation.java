@@ -43,7 +43,7 @@ import org.apache.brooklyn.config.ConfigKey;
 import org.apache.brooklyn.container.entity.docker.DockerContainer;
 import org.apache.brooklyn.container.entity.kubernetes.KubernetesPod;
 import org.apache.brooklyn.container.entity.kubernetes.KubernetesResource;
-import org.apache.brooklyn.container.location.docker.DockerJcloudsLocation;
+import org.apache.brooklyn.atos.location.rfi.DockerJcloudsLocation;
 import org.apache.brooklyn.container.location.kubernetes.machine.KubernetesEmptyMachineLocation;
 import org.apache.brooklyn.container.location.kubernetes.machine.KubernetesMachineLocation;
 import org.apache.brooklyn.container.location.kubernetes.machine.KubernetesSshMachineLocation;
