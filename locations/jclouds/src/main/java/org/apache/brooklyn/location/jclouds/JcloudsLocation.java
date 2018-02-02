@@ -1279,7 +1279,7 @@ public class JcloudsLocation extends AbstractCloudMachineProvisioningLocation im
             .put(DOMAIN_NAME, TemplateOptionCustomizers.domainName())
             .put(EXTRA_PUBLIC_KEY_DATA_TO_AUTH, TemplateOptionCustomizers.extraPublicKeyDataToAuth())
             .put(INBOUND_PORTS, TemplateOptionCustomizers.inboundPorts())
-            .put(KEY_PAIR, TemplateOptionCustomizers.keyRegPair())
+            .put(KEY_PAIR, TemplateOptionCustomizers.keyPair())
             .put(LOGIN_USER, TemplateOptionCustomizers.loginUser())
             .put(LOGIN_USER_PASSWORD, TemplateOptionCustomizers.loginUserPassword())
             .put(LOGIN_USER_PRIVATE_KEY_DATA, TemplateOptionCustomizers.loginUserPrivateKeyData())
